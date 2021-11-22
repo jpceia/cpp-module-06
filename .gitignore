@@ -1,4 +1,5 @@
 /.vscode
-/ex00
-/ex01
 /subject
+*.o
+*.out
+*.a
