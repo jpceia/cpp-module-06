@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/12/19 02:21:25 by jpceia            #+#    #+#              #
+#    Updated: 2021/12/23 03:37:26 by jpceia           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME        = check_type
 
 INC_DIR     = headers
@@ -42,7 +54,7 @@ re: fclean all
 
 # Debug build
 debug:      CXXFLAGS += $(FLAGS_DEBUG)
-debug:      re
+debug:      all
 
 
 .PHONY:     all clean fclean re debug
