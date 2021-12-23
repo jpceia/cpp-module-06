@@ -6,7 +6,7 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/19 02:01:01 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/19 02:58:16 by jpceia           ###   ########.fr       */
+/*   Updated: 2021/12/23 02:14:16 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,104 +15,136 @@
 #include <sstream>
 #include <cmath>
 #include <cctype>
+#include <limits>
 
 enum e_literal_type
 {
     NONE,
     CHAR,
     INT,
-    FLOAT,
-    DOUBLE
+    FLOAT_REGULAR,
+    FLOAT_NAN,
+    FLOAT_INF,
+    FLOAT_NEG_INF,
+    DOUBLE_REGULAR,
+    DOUBLE_NAN,
+    DOUBLE_INF,
+    DOUBLE_NEG_INF
 };
 
-bool is_number(const std::string& str)
+template <typename T>
+bool in_range(const T& d, const T& min, T& max)
 {
-    std::string::const_iterator it = str.begin();
-    while (it != str.end() && std::isdigit(*it))
-        ++it;
-    return !str.empty() && it == str.end();
+    return (d >= min && d <= max);
 }
 
-e_literal_type get_type(const std::string& literal)
+e_literal_type get_type_wo_validation(const std::string& literal)
 {
     // handling special cases
-    if (literal == "-inf" || literal == "inf" || literal == "nan")
-        return DOUBLE;
-    if (literal == "-inff" || literal == "inff" || literal == "nanf")
-        return FLOAT;
+    if (literal == "nanf")
+        return FLOAT_NAN;
+    if (literal == "inff")
+        return FLOAT_INF;
+    if (literal == "-inff")
+        return FLOAT_NEG_INF;
+    if (literal == "nan")
+        return DOUBLE_NAN;
+    if (literal == "inf")
+        return DOUBLE_INF;
+    if (literal == "-inf")
+        return DOUBLE_NEG_INF;
     if (literal.length() == 0)
         return NONE;
     if (literal.length() < 2) // Can be either a char or an int
     {
-        if (std::string("0123456789").find(literal) != std::string::npos)
+        if (static_cast<std::string>("0123456789").find(literal) != std::string::npos)
             return INT;
         return CHAR;
     }
-    // else
-    // Can be either int, float or double
-    size_t point_pos = literal.find('.');
-    size_t start_pos = 0;
-    // check if has a signal
-    if (literal[0] == '-' || literal[0] == '+')
-        start_pos = 1;
     if (literal.find('f') != std::string::npos)
-    {
-        if (point_pos != std::string::npos)
-        {
-            if (!is_number(literal.substr(start_pos, point_pos)))
-                return NONE;
-            if (!is_number(literal.substr(point_pos + 1, literal.length() - 1)))
-                return NONE;
-            return FLOAT;
-        }
-        else
-        {
-            if (!is_number(literal.substr(start_pos, literal.length() - 1)))
-                return NONE;
-            return FLOAT;
-        }
-        return FLOAT;
-    }
-    if (point_pos != std::string::npos)
-    {
-        if (!is_number(literal.substr(start_pos, point_pos)))
-            return NONE;
-        if (!is_number(literal.substr(point_pos + 1, literal.length())))
-            return NONE;
-        return DOUBLE;
-    }
-    if (!is_number(literal.substr(start_pos, literal.length())))
-        return NONE;
+        return FLOAT_REGULAR;
+    if (literal.find('.') != std::string::npos)
+        return DOUBLE_REGULAR;
     return INT;
 }
 
-void display_char(char c)
+e_literal_type get_type(const std::string& literal)
+{
+    e_literal_type type = get_type_wo_validation(literal);
+    
+    std::stringstream ss;
+    
+    switch (type)
+    {
+    case FLOAT_NAN:
+    case FLOAT_NEG_INF:
+    case FLOAT_INF:
+    case DOUBLE_NAN:
+    case DOUBLE_NEG_INF:
+    case DOUBLE_INF:
+        // no validation required
+        return type;
+    case NONE:
+        return NONE;
+    case CHAR:
+        ss << literal;
+        char c;
+        ss >> c >> std::ws;
+        if (ss.fail() || !ss.eof())
+            return NONE;
+        return CHAR;
+    case INT:
+        ss << literal;
+        int i;
+        ss >> i;
+        if (ss.fail() || !ss.eof())
+            return NONE;
+        return INT;
+    case FLOAT_REGULAR:
+        ss << literal.substr(0, literal.length() - 1);
+        float f;
+        ss >> f;
+        if (ss.fail() || !ss.eof())
+            return NONE;
+        return FLOAT_REGULAR;
+    case DOUBLE_REGULAR:
+        ss << literal;
+        double d;
+        ss >> d;
+        if (ss.fail() || !ss.eof())
+            return NONE;
+        return DOUBLE_REGULAR;
+    }
+    return NONE;
+}
+
+void print_char(char c)
 {
     if (std::isprint(c))
-        std::cout << "char: " << c << std::endl;
+        std::cout << "char: '" << c << "'" << std::endl;
     else
         std::cout << "char: Non displayable" << std::endl;
 }
 
-void display(char c)
+void print_literal(char c)
 {
-    std::cout << "char: " << c << std::endl;
+    print_char(c);
     std::cout << "int: " << static_cast<int>(c) << std::endl;
     std::cout << std::setprecision(1) << std::fixed;
     std::cout << "float: " << static_cast<float>(c) << 'f' << std::endl;
     std::cout << "double: " << static_cast<double>(c) << std::endl;
 }
 
-void display(int i)
+void print_literal(int i)
 {
-    display_char(static_cast<char>(i));
+    std::cout << "char: Non displayable" << std::endl;
     std::cout << "int: " << i << std::endl;
     std::cout << std::setprecision(1) << std::fixed;
     std::cout << "float: " << static_cast<float>(i) << 'f' << std::endl;
     std::cout << "double: " << static_cast<double>(i) << std::endl;
 }
 
-void display(float f)
+void print_literal(float f)
 {
     if (std::isnan(f) || std::isinf(f))
     {
@@ -121,15 +153,15 @@ void display(float f)
     }
     else
     {
-        display_char(static_cast<char>(f));
+        print_char(static_cast<char>(f));
         std::cout << "int: " << static_cast<int>(f) << std::endl;   
     }
-    std::cout << std::setprecision(1) << std::fixed;
+    std::cout << std::setprecision(9) << std::fixed;
     std::cout << "float: " << f << 'f' << std::endl;
     std::cout << "double: " << static_cast<float>(f) << std::endl;
 }
 
-void display(double d)
+void print_literal(double d)
 {
     if (std::isnan(d) || std::isinf(d))
     {
@@ -138,12 +170,68 @@ void display(double d)
     }
     else
     {
-        display_char(static_cast<char>(d));
+        print_char(static_cast<char>(d));
         std::cout << "int: " << static_cast<int>(d) << std::endl;   
     }
-    std::cout << std::setprecision(1) << std::fixed;
+    std::cout << std::setprecision(9) << std::fixed;
     std::cout << "float: " << static_cast<float>(d) << 'f' << std::endl;
     std::cout << "double: " << d << std::endl;
+}
+
+int print_literal(const std::string& str)
+{
+    e_literal_type type = get_type(str);
+    std::stringstream ss;
+    
+    switch (type)
+    {
+    case FLOAT_NAN:
+        print_literal(std::numeric_limits<float>::quiet_NaN());
+        return 0;
+    case FLOAT_NEG_INF:
+        print_literal(-std::numeric_limits<float>::infinity());
+        return 0;
+    case FLOAT_INF:
+        print_literal(std::numeric_limits<float>::infinity());
+        return 0;
+    case DOUBLE_NAN:
+        print_literal(std::numeric_limits<double>::quiet_NaN());
+        return 0;
+    case DOUBLE_NEG_INF:
+        print_literal(-std::numeric_limits<double>::infinity());
+        return 0;
+    case DOUBLE_INF:
+        print_literal(std::numeric_limits<double>::infinity());
+        return 0;
+    case CHAR:
+        char c;
+        ss << str;
+        ss >> c;
+        print_literal(c);
+        return 0;
+    case INT:
+        int i;
+        ss << str;
+        ss >> i;
+        print_literal(i);
+        return 0;
+    case FLOAT_REGULAR:
+        float f;
+        ss << str.substr(0, str.length() - 1);
+        ss >> f;
+        print_literal(f);
+        return 0;
+    case DOUBLE_REGULAR:
+        double d;
+        ss << str;
+        ss >> d;
+        print_literal(d);
+        return 0;
+    case NONE:
+    default:
+        std::cerr << "Error: Invalid literal" << std::endl;
+    }
+    return 1;
 }
 
 /*
@@ -153,39 +241,12 @@ void display(double d)
 ** notation will be used.
 */
 int main(int argc, char **argv)
-{
+{   
     if (argc != 2)
     {
         std::cout << "Usage: ./main <char|int|float|double>" << std::endl;
         return (1);
     }
-
-    std::stringstream literal(argv[1]);
-    e_literal_type type = get_type(literal.str());
-    switch (type)
-    {
-    case CHAR:
-        char c;
-        literal >> c;
-        display(c);
-        break;
-    case INT:
-        int i;
-        literal >> i;
-        display(i);
-        break;
-    case FLOAT:
-        float f;
-        literal >> f;
-        display(f);
-        break;
-    case DOUBLE:
-        double d;
-        literal >> d;
-        display(d);
-        break;
-    default:
-        std::cout << "Invalid literal" << std::endl;
-        break;
-    }
+    int status = print_literal(static_cast<std::string>(argv[1]));
+    return (status);
 }
