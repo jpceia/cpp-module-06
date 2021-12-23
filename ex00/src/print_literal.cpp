@@ -6,7 +6,7 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 02:52:34 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 02:57:02 by jpceia           ###   ########.fr       */
+/*   Updated: 2021/12/23 03:04:22 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void print_literal(float f)
         std::cout << "int: " << static_cast<int>(f) << std::endl;  
     else
         std::cout << "int: impossible" << std::endl;
-    
+
     std::cout << "float: " << f << 'f' << std::endl;
     std::cout << "double: " << static_cast<float>(f) << std::endl;
 }
@@ -69,8 +69,10 @@ void print_literal(double d)
         std::cout << "int: " << static_cast<int>(d) << std::endl;  
     else
         std::cout << "int: impossible" << std::endl;
-    
-    std::cout << "float: " << static_cast<float>(d) << 'f' << std::endl;
+    if (in_range<double, float>(d, std::numeric_limits<float>()))
+        std::cout << "float: " << static_cast<float>(d) << 'f' << std::endl;
+    else
+        std::cout << "float: impossible" << std::endl;
     std::cout << "double: " << d << std::endl;
 }
 
