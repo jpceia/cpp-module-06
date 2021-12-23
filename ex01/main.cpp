@@ -6,7 +6,7 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/19 02:58:50 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 03:21:15 by jpceia           ###   ########.fr       */
+/*   Updated: 2021/12/23 03:27:40 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,9 @@ int main(void)
     std::cout << "x: " << ptr->x << std::endl;
     std::cout << "y: " << ptr->y << std::endl;
     std::cout << "z: " << ptr->z << std::endl;
+
+    // Check if the return value is equal to the first pointer.
+    std::cout << "&data : " << &data << std::endl;
+    std::cout << "ptr   : " << ptr << std::endl;
     return (0);
 }
