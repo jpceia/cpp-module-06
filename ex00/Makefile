@@ -5,38 +5,56 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/12/14 13:03:46 by jpceia            #+#    #+#              #
-#    Updated: 2021/12/19 02:31:19 by jpceia           ###   ########.fr        #
+#    Created: 2021/11/03 00:21:36 by jceia             #+#    #+#              #
+#    Updated: 2021/12/23 02:57:28 by jpceia           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= scalar_conversion
+NAME        = scalar_conversion
 
-SRCS 		= main.cpp
+INC_DIR     = headers
+SRC_DIR     = src
+OBJ_DIR     = obj
 
-CXX	 		= clang++
-RM   		= rm -f
+SRCS        = $(shell find $(SRC_DIR) -name "*.cpp" -type f)
+OBJS        = $(SRCS:$(SRC_DIR)/%=$(OBJ_DIR)/%.o)
 
-FLAGS_WARN	= -Wall -Werror -Wextra -pedantic-errors
+CXX          = clang++
+RM           = rm -f
 
-CXXFLAGS 	= $(FLAGS_WARN) -std=c++98 
+OS          = $(shell uname)
 
-all:	$(NAME)
+FLAGS_WARN  = -Wall -Werror -Wextra -pedantic-errors
+FLAGS_INC   = -I$(INC_DIR)
+FLAGS_DEBUG = -g -fsanitize=address -DDEBUG
+FLAGS_OPT   = -O3
 
-$(NAME): $(SRCS)
-	$(CXX) $(CXXFLAGS) $(SRCS) -o $(NAME)
+CXXFLAGS    = $(FLAGS_WARN) $(FLAGS_INC) $(FLAGS_DEBUG) -std=c++98
+
+# Compilation
+$(OBJ_DIR)/%.o:    $(SRC_DIR)/%
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Linking
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+all: $(NAME)
 
 # Cleaning
 clean:
+	$(RM) -rf $(OBJ_DIR)
+
+fclean: clean
 	$(RM) $(NAME)
 
-fclean:	clean
-
 # Rebuild
-re:	fclean all
+re: fclean all
 
-# Debug
-debug:		CXXFLAGS += $(FLAGS_DEBUG)
-debug:		re
+# Debug build
+debug:      CXXFLAGS += $(FLAGS_DEBUG)
+debug:      re
 
-.PHONY:		all clean fclean re debug
+
+.PHONY:     all clean fclean re debug
