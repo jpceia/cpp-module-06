@@ -6,7 +6,7 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 02:52:34 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 03:04:22 by jpceia           ###   ########.fr       */
+/*   Updated: 2022/01/02 09:49:10 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <sstream>
 #include <limits>
 
+
 void print_char(char c)
 {
     if (std::isprint(c))
@@ -25,58 +26,113 @@ void print_char(char c)
         std::cout << "char: Non displayable" << std::endl;
 }
 
-void print_literal(char c)
+void print_int(int i)
 {
-    print_char(c);
-    std::cout << "int: " << static_cast<int>(c) << std::endl;
-    std::cout << "float: " << static_cast<float>(c) << 'f' << std::endl;
-    std::cout << "double: " << static_cast<double>(c) << std::endl;
+    std::cout << "int: " << i << std::endl;
 }
 
-void print_literal(int i)
+void print_float(float f)
 {
-    if (in_range<int, char>(i, std::numeric_limits<char>()))
+    std::stringstream ss;
+    
+    ss << std::fixed;
+    ss << f;
+    
+    std::string s = ss.str();
+    // adds .0 if the number is an integer
+    if (s.find('.') == std::string::npos)
+        s += ".0";
+    else
+    {
+        // removes trailing zeros except for the last one
+        size_t pos = s.find_last_not_of('0');
+        if (pos != std::string::npos)
+        {
+            if (s[pos] == '.')
+                pos++;
+            s = s.substr(0, pos + 1);
+        }
+    }
+    std::cout << "float: " << s << 'f' << std::endl;
+}
+
+void print_double(double d)
+{
+    std::stringstream ss;
+    
+    ss << std::fixed;
+    ss << d;
+
+    std::string s = ss.str();
+    // adds .0 if the number is an integer
+    if (s.find('.') == std::string::npos)
+        s += ".0";
+    else
+    {
+        // removes trailing zeros except for the last one
+        size_t pos = s.find_last_not_of('0');
+        if (pos != std::string::npos)
+        {
+            if (s[pos] == '.')
+                pos++;
+            s = s.substr(0, pos + 1);
+        }
+    }
+    std::cout << "double: " << s << std::endl;
+}
+
+void print_literals(char c)
+{
+    print_char(c);
+    print_int(static_cast<int>(c));
+    print_float(static_cast<float>(c));
+    print_double(static_cast<double>(c));
+}
+
+void print_literals(int i)
+{
+    if (in_range(i, std::numeric_limits<char>()))
         print_char(static_cast<char>(i));
     else
         std::cout << "char: impossible" << std::endl;
-    std::cout << "int: " << i << std::endl;
-    std::cout << "float: " << static_cast<float>(i) << 'f' << std::endl;
-    std::cout << "double: " << static_cast<double>(i) << std::endl;
+    print_int(i);
+    print_float(static_cast<float>(i));
+    print_double(static_cast<double>(i));
 }
 
-void print_literal(float f)
+void print_literals(float f)
 {
-    if (in_range<float, char>(f, std::numeric_limits<char>()))
+    if (in_range(f, std::numeric_limits<char>()))
         print_char(static_cast<char>(f));
     else
         std::cout << "char: impossible" << std::endl;
-    if (in_range<float, int>(f, std::numeric_limits<int>()))
-        std::cout << "int: " << static_cast<int>(f) << std::endl;  
+    if (in_range(f, std::numeric_limits<int>()))
+        print_int(static_cast<int>(f));
     else
         std::cout << "int: impossible" << std::endl;
-
-    std::cout << "float: " << f << 'f' << std::endl;
-    std::cout << "double: " << static_cast<float>(f) << std::endl;
+    print_float(f);
+    print_double(static_cast<double>(f));
 }
 
-void print_literal(double d)
+void print_literals(double d)
 {
-    if (in_range<double, char>(d, std::numeric_limits<char>()))
+    if (in_range(d, std::numeric_limits<char>()))
         print_char(static_cast<char>(d));
     else
         std::cout << "char: impossible" << std::endl;
-    if (in_range<double, int>(d, std::numeric_limits<int>()))
-        std::cout << "int: " << static_cast<int>(d) << std::endl;  
+    if (in_range(d, std::numeric_limits<int>()))
+        print_int(static_cast<int>(d));
     else
         std::cout << "int: impossible" << std::endl;
-    if (in_range<double, float>(d, std::numeric_limits<float>()))
-        std::cout << "float: " << static_cast<float>(d) << 'f' << std::endl;
+    if (in_range(d, std::numeric_limits<float>()))
+        print_float(static_cast<float>(d));
     else
         std::cout << "float: impossible" << std::endl;
-    std::cout << "double: " << d << std::endl;
+    print_double(d);
 }
 
-int print_literal(const std::string& str)
+
+int print_literal_from_string(const std::string& str)
 {
     e_literal_type type = get_type(str);
     std::stringstream ss;
@@ -84,46 +140,49 @@ int print_literal(const std::string& str)
     switch (type)
     {
     case FLOAT_NAN:
-        print_literal(std::numeric_limits<float>::quiet_NaN());
+    case DOUBLE_NAN:
+        std::cout << "char: impossible" << std::endl;
+        std::cout << "int: impossible" << std::endl;
+        std::cout << "float: nanf" << std::endl;
+        std::cout << "double: nan" << std::endl;
         return 0;
     case FLOAT_NEG_INF:
-        print_literal(-std::numeric_limits<float>::infinity());
+    case DOUBLE_NEG_INF:
+        std::cout << "char: impossible" << std::endl;
+        std::cout << "int: impossible" << std::endl;
+        std::cout << "float: -inff" << std::endl;
+        std::cout << "double: -inf" << std::endl;
         return 0;
     case FLOAT_INF:
-        print_literal(std::numeric_limits<float>::infinity());
-        return 0;
-    case DOUBLE_NAN:
-        print_literal(std::numeric_limits<double>::quiet_NaN());
-        return 0;
-    case DOUBLE_NEG_INF:
-        print_literal(-std::numeric_limits<double>::infinity());
-        return 0;
     case DOUBLE_INF:
-        print_literal(std::numeric_limits<double>::infinity());
+        std::cout << "char: impossible" << std::endl;
+        std::cout << "int: impossible" << std::endl;
+        std::cout << "float: inff" << std::endl;
+        std::cout << "double: inf" << std::endl;
         return 0;
     case CHAR:
         char c;
         ss << str;
         ss >> c;
-        print_literal(c);
+        print_literals(c);
         return 0;
     case INT:
         int i;
         ss << str;
         ss >> i;
-        print_literal(i);
+        print_literals(i);
         return 0;
     case FLOAT_REGULAR:
         float f;
         ss << str.substr(0, str.length() - 1);
         ss >> f;
-        print_literal(f);
+        print_literals(f);
         return 0;
     case DOUBLE_REGULAR:
         double d;
         ss << str;
         ss >> d;
-        print_literal(d);
+        print_literals(d);
         return 0;
     case NONE:
     default:

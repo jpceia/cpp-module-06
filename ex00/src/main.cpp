@@ -6,7 +6,7 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/19 02:01:01 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 02:58:06 by jpceia           ###   ########.fr       */
+/*   Updated: 2022/01/02 09:35:17 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 ** notation will be used.
 */
 int main(int argc, char **argv)
-{   
+{
     if (argc != 2)
     {
         std::cout << "Usage: ./main <char|int|float|double>" << std::endl;
         return (1);
     }
-    int status = print_literal(static_cast<std::string>(argv[1]));
+    int status = print_literal_from_string(static_cast<std::string>(argv[1]));
     return (status);
 }

@@ -6,12 +6,17 @@
 /*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 02:52:43 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 02:58:25 by jpceia           ###   ########.fr       */
+/*   Updated: 2022/01/02 09:36:30 by jpceia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <limits>
-#include <iostream>
+#ifndef SCALAR_CONVERSION_HPP
+# define SCALAR_CONVERSION_HPP
+
+
+
+# include <limits>
+# include <iostream>
 
 enum e_literal_type
 {
@@ -29,10 +34,12 @@ enum e_literal_type
 };
 
 e_literal_type get_type(const std::string& literal);
-int print_literal(const std::string& str);
+int print_literal_from_string(const std::string& str);
 
 template <typename T, typename U>
-bool in_range(const T& d, struct std::numeric_limits<U> limits)
+bool in_range(const T& x, struct std::numeric_limits<U> limits)
 {
-    return (d >= static_cast<T>(limits.min()) && d <= static_cast<T>(limits.max()));
+    return (x >= static_cast<T>(limits.min()) && x <= static_cast<T>(limits.max()));
 }
+
+#endif

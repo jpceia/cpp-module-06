@@ -6,11 +6,11 @@
 #    By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/03 00:21:36 by jceia             #+#    #+#              #
-#    Updated: 2021/12/23 02:57:28 by jpceia           ###   ########.fr        #
+#    Updated: 2022/01/02 09:35:26 by jpceia           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME        = scalar_conversion
+NAME        = convert
 
 INC_DIR     = headers
 SRC_DIR     = src
