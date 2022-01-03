@@ -1,5 +1,4 @@
 /.vscode
-/subject
 *.o
-*.out
 *.a
+*.out
