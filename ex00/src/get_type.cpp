@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_type.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+        */
+/*   By: jceia <jceia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 02:53:00 by jpceia            #+#    #+#             */
-/*   Updated: 2021/12/23 02:54:53 by jpceia           ###   ########.fr       */
+/*   Updated: 2022/01/03 13:32:39 by jceia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ e_literal_type get_type_wo_validation(const std::string& literal)
     // handling special cases
     if (literal == "nanf")
         return FLOAT_NAN;
-    if (literal == "inff")
+    if (literal == "inff" || literal == "+inff")
         return FLOAT_INF;
     if (literal == "-inff")
         return FLOAT_NEG_INF;
     if (literal == "nan")
         return DOUBLE_NAN;
-    if (literal == "inf")
+    if (literal == "inf" || literal == "+inf")
         return DOUBLE_INF;
     if (literal == "-inf")
         return DOUBLE_NEG_INF;
