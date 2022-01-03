@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jpceia <joao.p.ceia@gmail.com>             +#+  +:+       +#+         #
+#    By: jceia <jceia@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/03 00:21:36 by jceia             #+#    #+#              #
-#    Updated: 2022/01/02 09:35:26 by jpceia           ###   ########.fr        #
+#    Updated: 2022/01/03 13:35:50 by jceia            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ FLAGS_INC   = -I$(INC_DIR)
 FLAGS_DEBUG = -g -fsanitize=address -DDEBUG
 FLAGS_OPT   = -O3
 
-CXXFLAGS    = $(FLAGS_WARN) $(FLAGS_INC) $(FLAGS_DEBUG) -std=c++98
+CXXFLAGS    = $(FLAGS_WARN) $(FLAGS_INC) -std=c++98
 
 # Compilation
 $(OBJ_DIR)/%.o:    $(SRC_DIR)/%
